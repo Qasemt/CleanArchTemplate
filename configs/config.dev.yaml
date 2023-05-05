@@ -3,7 +3,7 @@ db:
   port: "5432"
   user: "postgres"
   password: "1525"
-  dbname: "tdb123"
+  dbname: "tvudf"
 
 redis:
   host: "localhost:6379"
