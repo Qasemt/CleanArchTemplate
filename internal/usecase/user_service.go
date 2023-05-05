@@ -7,14 +7,15 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/qchart-app/service-tv-udf/internal/domain"
+	"github.com/qchart-app/service-tv-udf/internal/domain/model"
 	"github.com/qchart-app/service-tv-udf/internal/infrastructure/cache"
 )
 
 type UserService interface {
-	CreateUser(user *domain.User) error
-	UpdateUser(user *domain.User) error
+	CreateUser(user *model.User) error
+	UpdateUser(user *model.User) error
 	DeleteUser(userID int) error
-	GetUserByID(userID int) (*domain.User, error)
+	GetUserByID(userID int) (*model.User, error)
 }
 
 type userServiceRedis struct {
@@ -26,7 +27,7 @@ func NewUserServiceRedis(cache *cache.CacheClient) UserService {
 	return &userServiceRedis{cache_client: *cache}
 }
 
-func (s *userServiceRedis) CreateUser(user *domain.User) error {
+func (s *userServiceRedis) CreateUser(user *model.User) error {
 	data, err := json.Marshal(user)
 	if err != nil {
 		return err
@@ -42,7 +43,7 @@ func (s *userServiceRedis) CreateUser(user *domain.User) error {
 	return nil
 }
 
-func (s *userServiceRedis) UpdateUser(user *domain.User) error {
+func (s *userServiceRedis) UpdateUser(user *model.User) error {
 	data, err := json.Marshal(user)
 	if err != nil {
 		return err
@@ -69,7 +70,7 @@ func (s *userServiceRedis) DeleteUser(userID int) error {
 	return nil
 }
 
-func (s *userServiceRedis) GetUserByID(userID int) (*domain.User, error) {
+func (s *userServiceRedis) GetUserByID(userID int) (*model.User, error) {
 	key := getUserKey(userID)
 
 	data, err := s.cache_client.GetOBJ(context.Background(), key)
@@ -79,7 +80,7 @@ func (s *userServiceRedis) GetUserByID(userID int) (*domain.User, error) {
 		return nil, err
 	}
 
-	return data.(*domain.User), nil
+	return data.(*model.User), nil
 }
 
 func getUserKey(userID int) string {

@@ -3,20 +3,21 @@ package usecase
 import (
 	"context"
 
-	domain "github.com/qchart-app/service-tv-udf/internal/domain"
+	"github.com/qchart-app/service-tv-udf/internal/domain"
+	"github.com/qchart-app/service-tv-udf/internal/domain/model"
 )
 
 type userUseCase struct {
-	userRepo    domain.UserRepository
+	userRepo    model.UserRepository
 	userService UserService
 }
 
-func NewUserUseCase(userRepo domain.UserRepository, srv UserService) domain.UserUseCase {
+func NewUserUseCase(userRepo model.UserRepository, srv UserService) model.UserUseCase {
 
 	return &userUseCase{userRepo: userRepo, userService: srv}
 }
 
-func (u *userUseCase) CreateUser(ctx context.Context, user *domain.User) error {
+func (u *userUseCase) CreateUser(ctx context.Context, user *model.User) error {
 	// Perform input validation
 	if user.FirstName == "" || user.Email == "" {
 		return domain.ErrBadParamInput
@@ -30,7 +31,7 @@ func (u *userUseCase) CreateUser(ctx context.Context, user *domain.User) error {
 	return nil
 }
 
-func (u *userUseCase) GetUserByID(ctx context.Context, id uint) (*domain.User, error) {
+func (u *userUseCase) GetUserByID(ctx context.Context, id uint) (*model.User, error) {
 	user, err := u.userService.GetUserByID(int(id))
 	if err != nil {
 		return nil, err
@@ -39,7 +40,7 @@ func (u *userUseCase) GetUserByID(ctx context.Context, id uint) (*domain.User, e
 	return user, nil
 }
 
-func (u *userUseCase) UpdateUser(ctx context.Context, user *domain.User) error {
+func (u *userUseCase) UpdateUser(ctx context.Context, user *model.User) error {
 	// Perform input validation
 	if user.ID == 0 || user.FirstName == "" || user.Email == "" {
 		return domain.ErrBadParamInput

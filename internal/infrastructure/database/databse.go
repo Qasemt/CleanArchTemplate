@@ -5,7 +5,7 @@ import (
 	"log"
 	"regexp"
 
-	"github.com/qchart-app/service-tv-udf/internal/domain"
+	"github.com/qchart-app/service-tv-udf/internal/domain/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -80,7 +80,7 @@ func NewGormDB(dbConfig map[string]string) (*GormDB, error) {
 			break
 		}
 	}
-	err = db.AutoMigrate(&domain.User{})
+	err = db.AutoMigrate(&model.User{})
 	if err != nil {
 		panic(err)
 	}

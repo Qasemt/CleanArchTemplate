@@ -3,15 +3,15 @@ package http
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/pkg/errors"
-	domain "github.com/qchart-app/service-tv-udf/internal/domain"
+	"github.com/qchart-app/service-tv-udf/internal/domain/model"
 	"github.com/qchart-app/service-tv-udf/pkg/util"
 )
 
 type UserHandler struct {
-	userUsecase domain.UserUseCase
+	userUsecase model.UserUseCase
 }
 
-func NewUserHandler(userUsecase domain.UserUseCase) *UserHandler {
+func NewUserHandler(userUsecase model.UserUseCase) *UserHandler {
 	return &UserHandler{userUsecase: userUsecase}
 }
 
@@ -25,7 +25,7 @@ func (h *UserHandler) RegisterRoutes(app *fiber.App) {
 }
 
 func (h *UserHandler) createUser(c *fiber.Ctx) error {
-	var user domain.User
+	var user model.User
 	err := c.BodyParser(&user)
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "invalid request body")
@@ -62,7 +62,7 @@ func (h *UserHandler) updateUser(c *fiber.Ctx) error {
 		return fiber.ErrBadRequest
 	}
 
-	var user domain.User
+	var user model.User
 	if err := c.BodyParser(&user); err != nil {
 		return fiber.ErrBadRequest
 	}
