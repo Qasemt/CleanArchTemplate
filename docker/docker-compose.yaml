@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  srv_chart:
+    build:
+      context: "."
+      dockerfile: "./Dockerfile.prod"
+      args:
+       CALL_BACK: http://127.0.0.1:9090 
+       HOSTREDIS: 192.168.1.37
+       HOSTDB: 192.168.1.37
+       SRV_PORT: 9091
+  db:
+    image: postgres:alpine
+    container_name: postgres
+    restart: always
+    environment: 
+        - DATABASE_HOST=127.0.0.1
+        - POSTGRES_USER=admin 
+        - POSTGRES_PASSWORD=1525
+        - POSTGRES_DB=charttv
+    ports:
+     - "2022:5432"
+    volumes:
+     - E:\\docker\\data_postgres:/var/lib/postgresql/data
+  
+
+
+  # depends_on:
+   #   - "account_db"
+  #  environment:
+   
+  

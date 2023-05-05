@@ -1,0 +1,62 @@
+# syntax=docker/dockerfile:1
+# Build Stage
+
+FROM golang:1.18.4-alpine AS BuildStage
+
+
+
+WORKDIR /app
+
+COPY go.mod ./
+COPY go.sum ./
+
+
+COPY . ./
+
+RUN CGO_ENABLED=0 go build -ldflags="-X 'main.AppEnv=production'"  -o /app/appserver
+
+
+# ::::::::::::::::::::::::::::::::::::::::: Deploy Stage ::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+FROM alpine:latest as production
+RUN apk --no-cache add yq nano --upgrade bash  ca-certificates
+
+WORKDIR /app
+
+# ARG CALL_BACK 
+# ARG HOSTDB 
+# ARG HOSTREDIS 
+# ARG SRV_PORT
+
+
+
+RUN [ ! -z "${CALL_BACK}" ] || { echo "urlLoginGoolgeCallBack cannot be empty"; exit 1; }  \
+    &&    [ ! -z "${HOSTDB}" ] || { echo "HOST DB cannot be empty"; exit 1; } \
+    && [ ! -z "${HOSTREDIS}" ] || { echo "HOST REDIS cannot be empty"; exit 1; } 
+
+
+
+
+
+
+COPY --from=BuildStage /app/appserver /app
+
+COPY .env /app
+COPY configs/config.dev.yaml /app/config.yaml
+
+# 192.168.1.37
+
+# ENV A $CALL_BACK
+# ENV B $HOSTDB
+# ENV C $HOSTREDIS
+# ENV D $SRV_PORT 
+
+# RUN /bin/sh -c "yq -i '.generalConfig.urlLoginGoolgeCallBack=\"$A\"' /app/appConfig.yaml" \
+#     && /bin/sh -c "yq -i '.sqlConfig.host=\"$B\"' /app/appConfig.yaml" \
+#     && /bin/sh -c "yq -i '.redisConfig.host=\"$C\"' /app/appConfig.yaml" \
+#     &&  /bin/sh -c "yq -i '.generalConfig.srv_port=\"$D\"' /app/appConfig.yaml"
+
+EXPOSE 9091
+
+
+ENTRYPOINT ./appserver run
