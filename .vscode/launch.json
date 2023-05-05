@@ -14,17 +14,17 @@
       "env": {
         "APP_ENV": "development"
       },
-      "args": ["--db-port", "${input:myParam}"],
+      //"args": ["--db-port", "${input:myParam}"],
       "program": "${workspaceRoot}/cmd/myapp/main.go",
       "output": "${workspaceRoot}/srvTvUDF.exe",
       "showLog": false
     }
-  ],
-  "inputs": [
-    {
-      "id": "myParam",
-      "type": "promptString",
-      "description": "Please enter myParam value"
-    }
   ]
+  // "inputs": [
+  //   {
+  //     "id": "myParam",
+  //     "type": "promptString",
+  //     "description": "Please enter myParam value"
+  //   }
+  // ]
 }
